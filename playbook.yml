@@ -1,0 +1,27 @@
+---
+- hosts: localhost
+  connection: local
+  user: vagrant
+  vars:
+      vagrant_home: "/home/vagrant"
+  tasks:
+    - name: install packages
+      apt: name={{item}} update_cache=yes
+      with_items:
+          - zsh
+          - git
+          - tig
+          - vim
+          - tmux
+          - language-pack-ja
+      become: yes
+    - name: clone personal settings
+      git: repo=https://github.com/GHKEN/dotfiles.git
+           dest={{vagrant_home}}/dotfiles
+    - name: simlink zshrc
+      file: src={{vagrant_home}}/dotfiles/.zshrc dest={{vagrant_home}}/.zshrc state=link
+    - name: simlink gitconfig
+      file: src={{vagrant_home}}/dotfiles/.gitconfig dest={{vagrant_home}}/.gitconfig state=link
+    - name: change shell
+      user: name=vagrant shell=/usr/bin/zsh
+      become: yes
