@@ -1,9 +1,9 @@
 ---
 - hosts: localhost
   connection: local
-  user: vagrant
+  user: ghken
   vars:
-      vagrant_home: "/home/vagrant"
+      ghken_home: "/home/ghken"
   tasks:
     - name: install packages
       apt: name={{item}} update_cache=yes
@@ -17,11 +17,11 @@
       become: yes
     - name: clone personal settings
       git: repo=https://github.com/GHKEN/dotfiles.git
-           dest={{vagrant_home}}/dotfiles
+           dest={{ghken_home}}/dotfiles
     - name: simlink zshrc
-      file: src={{vagrant_home}}/dotfiles/.zshrc dest={{vagrant_home}}/.zshrc state=link
+      file: src={{ghken_home}}/dotfiles/.zshrc dest={{ghken_home}}/.zshrc state=link
     - name: simlink gitconfig
-      file: src={{vagrant_home}}/dotfiles/.gitconfig dest={{vagrant_home}}/.gitconfig state=link
+      file: src={{ghken_home}}/dotfiles/.gitconfig dest={{ghken_home}}/.gitconfig state=link
     - name: change shell
-      user: name=vagrant shell=/usr/bin/zsh
+      user: name=ghken shell=/usr/bin/zsh
       become: yes
