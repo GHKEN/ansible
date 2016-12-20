@@ -1,10 +1,17 @@
 ---
 - hosts: localhost
   connection: local
+  become: yes
   user: ghken
   vars:
       ghken_home: "/home/ghken"
   tasks:
+    - name: create user
+      user: name=ghken uid=1001
+    - name: create .ssh
+      file: dest=/home/ghken/.ssh/ state=directory owner=ghken group=ghken mode=700
+    - name: copy authorized_key
+      copy: src=/home/ubuntu/.ssh/authorized_keys dest=/home/ghken/.ssh/authorized_keys owner=ghken group=ghken mode=700
     - name: install packages
       apt: name={{item}} update_cache=yes
       with_items:
@@ -29,3 +36,8 @@
     - name: change shell
       user: name=ghken shell=/usr/bin/zsh
       become: yes
+    - name: add sudoer
+      lineinfile:
+        dest: /etc/sudoers
+        backup: yes
+        line: 'ghken ALL=(ALL) NOPASSWD: ALL'
